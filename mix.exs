@@ -3,8 +3,8 @@ defmodule Elixlsx.Mixfile do
 
   def project do
     [app: :elixlsx,
-     version: "0.2.0",
-     elixir: "~> 1.1",
+     version: "0.4.0",
+     elixir: "~> 1.3",
      package: package(),
      description: "a writer for XLSX spreadsheet files",
      build_embedded: Mix.env == :prod,
@@ -21,7 +21,8 @@ defmodule Elixlsx.Mixfile do
       {:excheck, "~> 0.5", only: :test},
       {:triq, github: "triqng/triq", only: :test},
       {:credo, "~> 0.5", only: [:dev, :test]},
-      {:ex_doc, "~> 0.14", only: [:dev]}
+      {:ex_doc, "~> 0.14", only: [:dev]},
+      {:dialyxir, "~> 0.5", only: [:dev], runtime: false}
     ]
   end
 

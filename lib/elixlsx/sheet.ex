@@ -3,7 +3,7 @@ defmodule Elixlsx.Sheet do
   alias Elixlsx.Sheet
   alias Elixlsx.Util
   @moduledoc ~S"""
-  Describes a single sheet with a given name.
+  Describes a single sheet with a given name. The name can be up to 31 characters long.
   The rows property is a list, each corresponding to a
   row (from the top), of lists, each corresponding to
   a column (from the left), of contents.
@@ -16,18 +16,21 @@ defmodule Elixlsx.Sheet do
   The property list describes formatting options for that
   cell. See Font.from_props/1 for a list of options.
   """
-  defstruct name: "", rows: [], col_widths: %{}, row_heights: %{}, merge_cells: [], pane_freeze: nil
+  defstruct name: "", rows: [], col_widths: %{}, row_heights: %{}, merge_cells: [], pane_freeze: nil, show_grid_lines: true, hidden: false
   @type t :: %Sheet {
     name: String.t,
     rows: list(list(any())),
     col_widths: %{pos_integer => number},
     row_heights: %{pos_integer => number},
     merge_cells: [],
-    pane_freeze: {number, number}
+    pane_freeze: {number, number} | nil,
+    show_grid_lines: boolean(),
+    hidden: boolean()
   }
 
   @doc ~S"""
   Create a sheet with a sheet name.
+  The name can be up to 31 characters long.
   """
   @spec with_name(String.t) :: Sheet.t
   def with_name(name) do
@@ -126,7 +129,7 @@ defmodule Elixlsx.Sheet do
   """
   def set_col_width(sheet, column, width) do
     update_in sheet.col_widths,
-              &(Dict.put &1, Util.decode_col(column), width)
+              &(Map.put &1, Util.decode_col(column), width)
   end
 
   @spec set_row_height(Sheet.t, number, number) :: Sheet.t
@@ -135,12 +138,13 @@ defmodule Elixlsx.Sheet do
   """
   def set_row_height(sheet, row_idx, height) do
     update_in sheet.row_heights,
-              &(Dict.put &1, row_idx, height)
+              &(Map.put &1, row_idx, height)
   end
 
   @spec set_pane_freeze(Sheet.t, number, number) :: Sheet.t
   @doc ~S"""
-  Set the pane freeze at the given row and column. Row and column are indexed starting from 1
+  Set the pane freeze at the given row and column. Row and column are indexed starting from 1.
+  Special value 0 means no freezing, e.g. {1, 0} will freeze first row and no columns.
   """
   def set_pane_freeze(sheet, row_idx, col_idx) do
      %{sheet | pane_freeze: {row_idx, col_idx}}
@@ -152,5 +156,13 @@ defmodule Elixlsx.Sheet do
   """
   def remove_pane_freeze(sheet) do
     %{sheet | pane_freeze: nil}
+  end
+
+  @spec set_hidden(Sheet.t(), boolean) :: Sheet.t()
+  @doc ~S"""
+  Sets a sheet as hidden.
+  """
+  def set_hidden(sheet, is_hidden) do
+    %{sheet | hidden: is_hidden}
   end
 end

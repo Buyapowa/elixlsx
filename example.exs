@@ -25,6 +25,8 @@ sheet1 = Sheet.with_name("First")
          |> Sheet.set_col_width("A", 18.0)
 # Cell borders
          |> Sheet.set_cell("A5", "Double border", border: [bottom: [style: :double, color: "#cc3311"]])
+# Formatting with empty content
+         |> Sheet.set_cell("A5", :empty, bg_color: "#ffff00", border: [bottom: [style: :double, color: "#cc3311"]])
 # Formula
          |> Sheet.set_cell("E1", 1.2, num_format: "0.00")
          |> Sheet.set_cell("E2", 2, num_format: "0.00")
@@ -44,7 +46,7 @@ workbook = %Workbook{sheets: [sheet1]}
 workbook = %Workbook{workbook | datetime: "2015-12-01T13:40:59Z"}
 
 # It is also possible to create a sheet as a list of rows:
-sheet2 = %Sheet{name: 'Third', rows: [[1,2,3,4,5],
+sheet2 = %Sheet{name: "Third", rows: [[1,2,3,4,5],
                                        [1,2],
                                        ["increased row height"],
                                        ["hello", "world"]]}
@@ -91,5 +93,9 @@ sheet4
 |> Sheet.set_pane_freeze(2, 1) # first and second row and first column frozen
 |> Sheet.remove_pane_freeze # unfreeze pane
 
+sheet5 = %Sheet{name: "No gridlines shown", show_grid_lines: false}
+         |> Sheet.set_at(0, 0, "Just this cell")
+
 Workbook.append_sheet(workbook, sheet4)
-|> Elixlsx.write_to("empty.xlsx")
+|> Workbook.append_sheet(sheet5)
+|> Elixlsx.write_to("example.xlsx")

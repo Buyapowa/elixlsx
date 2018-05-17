@@ -5,6 +5,7 @@ defmodule Elixlsx.Compiler.CellStyleDB do
   alias Elixlsx.Compiler.NumFmtDB
   alias Elixlsx.Compiler.BorderStyleDB
   alias Elixlsx.Compiler.WorkbookCompInfo
+  alias Elixlsx.Compiler.DBUtil
 
   defstruct cellstyles: %{}, element_count: 0
 
@@ -15,11 +16,11 @@ defmodule Elixlsx.Compiler.CellStyleDB do
 
 
   def register_style(cellstyledb, style) do
-    case Dict.fetch(cellstyledb.cellstyles, style) do
+    case Map.fetch(cellstyledb.cellstyles, style) do
       :error ->
         # add +1 here already since "0" refers to the default style
         csdb = update_in cellstyledb.cellstyles,
-                  &(Dict.put &1, style, (cellstyledb.element_count + 1))
+                  &(Map.put &1, style, (cellstyledb.element_count + 1))
         update_in csdb.element_count, &(&1 + 1)
       {:ok, _} ->
         cellstyledb
@@ -27,7 +28,7 @@ defmodule Elixlsx.Compiler.CellStyleDB do
   end
 
   def get_id(cellstyledb, style) do
-    case Dict.fetch(cellstyledb.cellstyles, style) do
+    case Map.fetch(cellstyledb.cellstyles, style) do
       :error ->
         raise %ArgumentError{message: "Could not find key in styledb: " <> inspect(style)}
       {:ok, key} ->
@@ -35,12 +36,7 @@ defmodule Elixlsx.Compiler.CellStyleDB do
     end
   end
 
-  def id_sorted_styles(cellstyledb) do
-    cellstyledb.cellstyles
-    |> Enum.map(fn ({k, v}) -> {v, k} end)
-    |> Enum.sort
-    |> Dict.values
-  end
+  def id_sorted_styles(cellstyledb), do: DBUtil.id_sorted_values(cellstyledb.cellstyles)
 
   @doc ~S"""
   Recursively register all fonts, numberformat,

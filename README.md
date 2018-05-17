@@ -1,6 +1,7 @@
 # Elixlsx
 
 [![Hex Version](http://img.shields.io/hexpm/v/elixlsx.svg?style=flat)](https://hex.pm/packages/elixlsx)
+[![Build Status](https://travis-ci.org/xou/elixlsx.svg?branch=master)](https://travis-ci.org/xou/elixlsx)
 
 A writer for XLSX files.
 
@@ -15,11 +16,14 @@ Features:
 
 ## Installation
 
+
+### Elixir 1.3 and above
+
 Via hex, in mix.exs:
 
 ```Elixir
 defp deps do
-  [{:elixlsx, "~> 0.2.0"}]
+  [{:elixlsx, "~> 0.4.0"}]
 end
 ```
 
@@ -27,7 +31,23 @@ Via github:
 
 ```Elixir
 defp deps do
-  [{:elixlsx, git: "https://github.com/xou/elixlsx.git"}]
+  [{:elixlsx, github: "xou/elixlsx"}]
+end
+```
+
+### Elixir pre 1.3
+
+```Elixir
+defp deps do
+  [{:elixlsx, "~> 0.3.1"}]
+end
+```
+
+Via github:
+
+```Elixir
+defp deps do
+  [{:elixlsx, github: "xou/elixlsx", tag: "v0.3.1"}]
 end
 ```
 
